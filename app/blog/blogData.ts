@@ -591,7 +591,7 @@ const rawBlogPosts = [
     slug: "google-analytics-4-metricas-estrategia-digital",
     category: "Marketing Digital",
   },
-];
+]; 
 
 // Assign cover images to posts by cycling through the 8 public images
 const coverImages = [
