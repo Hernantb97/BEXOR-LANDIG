@@ -5,12 +5,6 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Para soporte de SPA
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 # Configuración de encabezados para API
 [[headers]]
   for = "/api/*"
