@@ -7,7 +7,22 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+    // Habilitamos Netlify para gestionar las imágenes
+    loader: 'default',
+    domains: [],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
+  // Habilitamos Edge Functions para imágenes
+  experimental: {
+    images: {
+      allowFutureImage: true,
+    },
   },
 }
 
