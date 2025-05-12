@@ -5,7 +5,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import ChatWidget from "@/components/chat-widget"
+// import ChatWidget from "@/components/chat-widget"
 import Script from "next/script"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -44,7 +44,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
-          <ChatWidget />
+          {/* <ChatWidget /> */}
         </ThemeProvider>
       </body>
     </html>
