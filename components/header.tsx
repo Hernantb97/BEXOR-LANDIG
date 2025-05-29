@@ -105,9 +105,8 @@ export default function Header() {
                 </li>
               </ul>
             </nav>
-            <a 
-              href="http://localhost:3000/login" 
-              target="_self"
+            <Link 
+              href="/dashboard/login" 
               className={cn(
                 "px-4 py-2 rounded-md font-medium transition-colors",
                 isScrolled 
@@ -116,7 +115,7 @@ export default function Header() {
               )}
             >
               Iniciar sesión
-            </a>
+            </Link>
           </div>
 
           <button
@@ -167,14 +166,13 @@ export default function Header() {
               </li>
             </ul>
           </nav>
-          <a 
-            href="http://localhost:3000/login" 
-            target="_self"
+          <Link 
+            href="/dashboard/login" 
             className="block w-full text-center px-4 py-2 rounded-md font-medium bg-primary text-white hover:bg-primary/90 transition-colors"
             onClick={toggleMobileMenu}
           >
             Iniciar sesión
-          </a>
+          </Link>
         </div>
       )}
     </header>

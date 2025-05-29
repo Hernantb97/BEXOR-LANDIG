@@ -3,10 +3,8 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-// import ChatWidget from "@/components/chat-widget"
 import Script from "next/script"
+import LayoutWithConditionalHeaderFooter from "@/components/LayoutWithConditionalHeaderFooter"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -41,10 +39,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <Header />
-          {children}
-          <Footer />
-          {/* <ChatWidget /> */}
+          <LayoutWithConditionalHeaderFooter>
+            {children}
+          </LayoutWithConditionalHeaderFooter>
         </ThemeProvider>
       </body>
     </html>
