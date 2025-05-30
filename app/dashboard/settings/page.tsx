@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import SettingsPanel from "@/components/settings-panel"
+import ConfigPanel from "@/components/config-panel"
 
 export const metadata: Metadata = {
   title: "Settings | WhatsApp Business Dashboard",
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
 }
 
 export default function SettingsPage() {
-  return <SettingsPanel />
+  return <ConfigPanel />
 }
 

@@ -15,6 +15,7 @@ import { es } from 'date-fns/locale'
 import CalendarAvailabilitySelector from "@/components/calendar-availability-selector"
 import BusinessScheduleEditor from "@/components/business-schedule-editor"
 import { useRouter } from 'next/navigation'
+import { API_BASE_URL } from '@/components/config'
 
 // Componente para el botón de conexión con Google Calendar
 function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
@@ -27,7 +28,7 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
     // Verificar si ya está conectado
     const checkConnection = async () => {
       try {
-        const response = await fetch(`http://localhost:3095/api/calendar/status?business_id=${businessId}&t=${Date.now()}`);
+        const response = await fetch(`${API_BASE_URL}/api/calendar/status?business_id=${businessId}&t=${Date.now()}`);
         const data = await response.json();
         
         if (data.success) {
@@ -46,7 +47,7 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
     setIsConnecting(true);
     
     try {
-      const response = await fetch('http://localhost:3095/api/calendar/auth', {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/auth`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -83,7 +84,7 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
             // Verificar de nuevo el estado
             setTimeout(async () => {
               try {
-                const statusResponse = await fetch(`http://localhost:3095/api/calendar/status?business_id=${businessId}&t=${Date.now()}`);
+                const statusResponse = await fetch(`${API_BASE_URL}/api/calendar/status?business_id=${businessId}&t=${Date.now()}`);
                 const statusData = await statusResponse.json();
                 
                 if (statusData.success && statusData.connected) {
@@ -174,7 +175,7 @@ function AppointmentForm({ businessId }: { businessId: string }) {
     const fetchTypes = async () => {
       setIsLoadingTypes(true);
       try {
-        const res = await fetch(`http://localhost:3095/api/business/appointment-types/${businessId}`);
+        const res = await fetch(`${API_BASE_URL}/api/business/appointment-types/${businessId}`);
         const data = await res.json();
         if (data.success) {
           setAppointmentTypes(data.types || data.data || []);
@@ -201,7 +202,7 @@ function AppointmentForm({ businessId }: { businessId: string }) {
     setResult(null);
 
     try {
-      const response = await fetch('http://localhost:3095/api/calendar/events', {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -418,7 +419,7 @@ function AppointmentsList({ businessId, phoneNumber }: { businessId: string, pho
     setIsLoading(true);
     setError(null);
     try {
-      let url = `/api/appointments/${businessId}`;
+      let url = `${API_BASE_URL}/api/appointments/${businessId}`;
       const response = await fetch(url);
       const data = await response.json();
       if (!data.success) {
@@ -548,7 +549,7 @@ function AppointmentTypesManager({ businessId }: { businessId: string }) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:3095/api/business/appointment-types/${businessId}`);
+      const res = await fetch(`${API_BASE_URL}/api/business/appointment-types/${businessId}`);
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Error al obtener tipos de cita');
       setTypes(data.types || data.data || []);
@@ -574,7 +575,7 @@ function AppointmentTypesManager({ businessId }: { businessId: string }) {
     if (!window.confirm('¿Eliminar este tipo de cita?')) return;
     try {
       setIsLoading(true);
-      const res = await fetch('http://localhost:3095/api/business/appointment-types', {
+      const res = await fetch(`${API_BASE_URL}/api/business/appointment-types`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessId, typeId: type.id })
@@ -595,7 +596,7 @@ function AppointmentTypesManager({ businessId }: { businessId: string }) {
     if (!form.name.trim() || !form.duration.trim()) return;
     setIsSaving(true);
     try {
-      const res = await fetch('http://localhost:3095/api/business/appointment-types', {
+      const res = await fetch(`${API_BASE_URL}/api/business/appointment-types`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -680,7 +681,7 @@ export default function CalendarManagementPanel({ businessId }: { businessId: st
   const fetchAllowOverlapping = useCallback(async () => {
     if (!businessId) return;
     try {
-      const response = await fetch(`http://localhost:3095/api/business/hours/${businessId}`);
+      const response = await fetch(`${API_BASE_URL}/api/business/hours/${businessId}`);
       const data = await response.json();
       if (data.success && data.data) {
         setAllowOverlapping(Boolean(data.data.allowOverlapping));
@@ -702,7 +703,7 @@ export default function CalendarManagementPanel({ businessId }: { businessId: st
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const res = await fetch(`http://localhost:3095/api/business/appointment-types/${businessId}`);
+        const res = await fetch(`${API_BASE_URL}/api/business/appointment-types/${businessId}`);
         const data = await res.json();
         if (data.success) {
           setAppointmentTypes(data.types || data.data || []);
@@ -721,7 +722,7 @@ export default function CalendarManagementPanel({ businessId }: { businessId: st
     setIsSavingOverlap(true);
     try {
       // Obtener horarios actuales para no perderlos
-      const response = await fetch(`http://localhost:3095/api/business/hours/${businessId}`);
+      const response = await fetch(`${API_BASE_URL}/api/business/hours/${businessId}`);
       const data = await response.json();
       const hours = data?.data?.hours || {};
       const payload = {
@@ -730,7 +731,7 @@ export default function CalendarManagementPanel({ businessId }: { businessId: st
         allowOverlapping: !!newAllow,
         maxOverlapping: newAllow ? newMax : 1
       };
-      const saveResp = await fetch('http://localhost:3095/api/business/hours', {
+      const saveResp = await fetch(`${API_BASE_URL}/api/business/hours`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

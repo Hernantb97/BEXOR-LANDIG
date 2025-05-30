@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import { API_BASE_URL } from '@/components/config'
 
 interface BusinessConfig {
   vector_store_id?: string;
@@ -116,13 +117,13 @@ export default function ConfigPanel() {
         if (session?.user) {
           const userId = session.user.id;
           // Llamar al nuevo endpoint para obtener el negocio asociado
-          const response = await fetch(`http://localhost:3095/api/my-business?user_id=${userId}`);
+          const response = await fetch(`${API_BASE_URL}/api/my-business?user_id=${userId}`);
           if (response.ok) {
             const data = await response.json();
             if (data.business && data.business.id) {
               setBusinessConfig({ id: data.business.id, name: data.business.name });
               // Ahora obtener el vector_store_id asociado a ese negocio
-              const configResp = await fetch(`http://localhost:3095/api/business/config?business_id=${data.business.id}`);
+              const configResp = await fetch(`${API_BASE_URL}/api/business/config?business_id=${data.business.id}`);
               if (configResp.ok) {
                 const configData = await configResp.json();
                 if (configData.vector_store_id) {
@@ -186,7 +187,7 @@ export default function ConfigPanel() {
     const fetchAssistantConfig = async () => {
       if (!businessConfig?.id) return;
       try {
-        const res = await fetch(`/api/business/config?business_id=${businessConfig.id}`);
+        const res = await fetch(`${API_BASE_URL}/api/business/config?business_id=${businessConfig.id}`);
         if (res.ok) {
           const config = await res.json();
           setAssistantName(config.assistant_name || "");
@@ -224,7 +225,7 @@ export default function ConfigPanel() {
       console.log(`Cargando palabras clave para el negocio: ${businessId}`)
       
       // Llamada real a la API para cargar las palabras clave
-      const response = await fetch(`/api/notifications/keywords-all?business_id=${businessId}`)
+      const response = await fetch(`${API_BASE_URL}/api/notifications/keywords-all?business_id=${businessId}`)
       
       if (response.ok) {
         const responseText = await response.text();
@@ -382,7 +383,7 @@ export default function ConfigPanel() {
       }
       
       // Llamada real a la API para guardar
-      const response = await fetch('/api/notifications/keywords', {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/keywords`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -436,7 +437,7 @@ export default function ConfigPanel() {
       setKeywords(updatedKeywords)
       
       // Llamada real a la API para actualizar
-      const response = await fetch(`/api/notifications/keywords?id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/keywords?id=${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: !currentEnabled })
@@ -497,7 +498,7 @@ export default function ConfigPanel() {
       setEditingKeywordValue("")
       
       // Llamada real a la API para actualizar
-      const response = await fetch(`/api/notifications/keywords?id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/keywords?id=${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keyword: editingKeywordValue.trim() })
@@ -543,7 +544,7 @@ export default function ConfigPanel() {
       setKeywords(keywords.filter(kw => kw.id !== id))
       
       // Llamada real a la API para eliminar
-      const response = await fetch(`/api/notifications/keywords?id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/keywords?id=${id}`, {
         method: 'DELETE'
       })
       
@@ -616,7 +617,7 @@ export default function ConfigPanel() {
       console.log(`Guardando datos del asistente para el negocio ${businessConfig.id}:`, datosAsistente)
       
       // Usamos el nuevo endpoint para actualizar el asistente en OpenAI y en la base de datos
-      const response = await fetch('/api/openai/update-assistant', {
+      const response = await fetch(`${API_BASE_URL}/api/openai/update-assistant`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -737,7 +738,7 @@ export default function ConfigPanel() {
       
       try {
         // Usamos el nuevo endpoint para subir archivos a OpenAI
-        const response = await fetch('/api/openai/upload-files', {
+        const response = await fetch(`${API_BASE_URL}/api/openai/upload-files`, {
           method: 'POST',
           body: formData
         })
@@ -1372,7 +1373,7 @@ function DocumentFilesList({ vectorStoreId, businessId, onFileDeleted }: Documen
       setError(null)
       
       // Utilizamos el nuevo endpoint para obtener la lista de archivos
-      const response = await fetch(`/api/openai/list-files?vector_store_id=${vectorStoreId}&business_id=${businessId}`)
+      const response = await fetch(`${API_BASE_URL}/api/openai/list-files?vector_store_id=${vectorStoreId}&business_id=${businessId}`)
       
       if (response.ok) {
         const data = await response.json()
@@ -1442,7 +1443,7 @@ function DocumentFilesList({ vectorStoreId, businessId, onFileDeleted }: Documen
     
     try {
       // Usamos el nuevo endpoint para eliminar archivos
-      const response = await fetch('/api/openai/delete-file', {
+      const response = await fetch(`${API_BASE_URL}/api/openai/delete-file`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'

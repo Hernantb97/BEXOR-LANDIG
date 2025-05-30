@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/lib/supabase"
 import CalendarManagementPanel from '@/components/calendar-management-panel'
-import { DEFAULT_BUSINESS_ID } from '@/components/config'
+import { DEFAULT_BUSINESS_ID, API_BASE_URL } from '@/components/config'
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function CalendarPage() {
@@ -21,7 +21,7 @@ export default function CalendarPage() {
         if (session?.user) {
           const userId = session.user.id
           // Usar el endpoint recomendado para obtener el business_id
-          const res = await fetch(`/api/my-business?user_id=${userId}`)
+          const res = await fetch(`${API_BASE_URL}/api/my-business?user_id=${userId}`)
           if (res.ok) {
             const { business } = await res.json()
             if (business && business.id) {
