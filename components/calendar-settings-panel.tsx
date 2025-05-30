@@ -377,6 +377,7 @@ export default function CalendarSettingsPanel() {
     )
   }
 
+  // Si hay negocio pero no está conectado a Google Calendar, mostrar el botón de conectar
   return (
     <Card className="mb-6">
       <CardHeader className="pb-2">
@@ -404,7 +405,6 @@ export default function CalendarSettingsPanel() {
                 </div>
               )}
             </div>
-            
             {isLoading ? (
               <div className="flex items-center justify-center p-2 text-xs">
                 <Loader2 className="h-3 w-3 animate-spin text-primary mr-2" />
@@ -434,37 +434,10 @@ export default function CalendarSettingsPanel() {
                           disabled={refreshLoading || !isConnected}
                         />
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={handleDisconnect}
-                        disabled={refreshLoading}
-                        className="h-6 text-xs px-2"
-                      >
-                        Desconectar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-6 text-xs px-2"
-                        onClick={handleRefreshStatus}
-                        disabled={refreshLoading}
-                      >
-                        {refreshLoading ? (
-                          <>
-                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                            Actualizando...
-                          </>
-                        ) : (
-                          <>
-                            <RefreshCcw className="h-3 w-3 mr-1" />
-                            Actualizar
-                          </>
-                        )}
-                      </Button>
                     </div>
                   </div>
                 ) : (
+                  // Si no está conectado, mostrar el botón de conectar
                   <div className="flex items-center justify-between border rounded-lg p-2">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-primary" />
@@ -482,7 +455,7 @@ export default function CalendarSettingsPanel() {
                           Conectando...
                         </>
                       ) : (
-                        'Conectar'
+                        'Configurar Google Calendar'
                       )}
                     </Button>
                   </div>

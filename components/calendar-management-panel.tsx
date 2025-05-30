@@ -22,6 +22,7 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -113,6 +114,41 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
     }
   };
   
+  // --- NUEVO: Handler para desconectar ---
+  const handleDisconnect = async () => {
+    setIsDisconnecting(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/disconnect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessId })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setIsConnected(false);
+        setLastUpdated(null);
+        toast({
+          title: 'Desconectado',
+          description: data.message || 'Google Calendar desincronizado correctamente.'
+        });
+      } else {
+        toast({
+          title: 'Error al desconectar',
+          description: data.error || 'No se pudo desincronizar Google Calendar.',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error al desconectar',
+        description: 'No se pudo desincronizar Google Calendar.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsDisconnecting(false);
+    }
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Button 
@@ -138,7 +174,19 @@ function GoogleCalendarConnectButton({ businessId }: { businessId: string }) {
           </>
         )}
       </Button>
-      
+      {/* Botón discreto para desconectar */}
+      {isConnected && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleDisconnect}
+          disabled={isDisconnecting}
+          className="text-xs text-muted-foreground hover:text-destructive px-2"
+          title="Desconectar Google Calendar"
+        >
+          {isDisconnecting ? 'Desconectando...' : 'Desconectar'}
+        </Button>
+      )}
       {isConnected && lastUpdated && (
         <span className="text-xs text-muted-foreground">
           Conectado el {new Date(lastUpdated).toLocaleDateString()}

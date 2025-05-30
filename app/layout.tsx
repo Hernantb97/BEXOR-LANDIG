@@ -5,6 +5,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import Script from "next/script"
 import LayoutWithConditionalHeaderFooter from "@/components/LayoutWithConditionalHeaderFooter"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             {children}
           </LayoutWithConditionalHeaderFooter>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )

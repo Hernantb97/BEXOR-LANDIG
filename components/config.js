@@ -5,7 +5,7 @@
 // Configuración para variables de entorno en Next.js
 // Usa el prefijo NEXT_PUBLIC_ para exponerlas al cliente
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3095';
 // Agrega aquí otras variables que necesites exportar
 
 // Configuraciones principales para la aplicación

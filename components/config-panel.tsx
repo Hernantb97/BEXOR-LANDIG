@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
-import { Settings, MessageCircle, Bell, Shield, Users, ArrowLeft, Loader2, Check, Save, Upload, FileUp, AlertTriangle, FileText, Plus, X, Edit, PlusCircle, Trash, Calendar } from "lucide-react"
+import { Settings, MessageCircle, Bell, Shield, Users, ArrowLeft, Loader2, Check, Save, Upload, FileUp, AlertTriangle, FileText, Plus, X, Edit, PlusCircle, Trash, Calendar, Eye, EyeOff } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import {
@@ -104,6 +104,14 @@ export default function ConfigPanel() {
   const [editingKeywordValue, setEditingKeywordValue] = useState("")
   const [loadingKeywords, setLoadingKeywords] = useState(false)
   const [savingKeyword, setSavingKeyword] = useState(false)
+  
+  // Estado para el formulario de cambio de contraseña
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const { toast } = useToast()
   const router = useRouter()
@@ -810,6 +818,70 @@ export default function ConfigPanel() {
     }
   }
 
+  // Handler para el cambio de contraseña
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast({
+        title: "Campos requeridos",
+        description: "Completa todos los campos.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Las contraseñas nuevas no coinciden.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setChangingPassword(true);
+    try {
+      const session = supabase.auth.getSession ? (await supabase.auth.getSession()).data.session : supabase.auth.session();
+      const access_token = session?.access_token;
+      if (!access_token) {
+        throw new Error("No se encontró sesión activa. Inicia sesión de nuevo.");
+      }
+      console.log("access_token:", access_token, "newPassword:", newPassword);
+      const res = await fetch(`${API_BASE_URL}/api/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          access_token,
+          newPassword
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data && !data.error) {
+        toast({
+          title: "Contraseña actualizada",
+          description: data.message || "Tu contraseña se ha cambiado correctamente.",
+          variant: "default",
+          className: "bg-green-500 text-white"
+        });
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else if (data && data.error) {
+        throw new Error(data.error);
+      } else {
+        throw new Error("No se pudo cambiar la contraseña");
+      }
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "No se pudo cambiar la contraseña",
+        variant: "destructive"
+      });
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
@@ -1315,19 +1387,43 @@ export default function ConfigPanel() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">Contraseña Actual</Label>
-                <Input id="current-password" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="new-password">Nueva Contraseña</Label>
-                <Input id="new-password" type="password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-                <Input id="confirm-password" type="password" />
-              </div>
-              <Button className="w-full">Actualizar Contraseña</Button>
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">Contraseña Actual</Label>
+                  <Input id="current-password" type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">Nueva Contraseña</Label>
+                  <div className="relative">
+                    <Input id="new-password" type={showNewPassword ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                      onClick={() => setShowNewPassword(v => !v)}
+                      tabIndex={-1}
+                    >
+                      {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
+                  <div className="relative">
+                    <Input id="confirm-password" type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                      onClick={() => setShowConfirmPassword(v => !v)}
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+                <Button className="w-full" type="submit" disabled={changingPassword}>
+                  {changingPassword ? "Actualizando..." : "Actualizar Contraseña"}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
