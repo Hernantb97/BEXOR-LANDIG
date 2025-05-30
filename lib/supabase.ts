@@ -489,6 +489,6 @@ export const testSupabaseConnection = async () => {
 
 // Función de Calendar para hacer redirect
 export const getRedirectUri = (req?: any) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3096';
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3095';
   return `${baseUrl}/api/calendar/callback`;
 } 

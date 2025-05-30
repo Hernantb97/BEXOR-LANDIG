@@ -306,6 +306,7 @@ export default function ChatView({
               placeholder="Type a message"
               className="min-h-[45px] max-h-[120px] resize-none py-3 rounded-md border-gray-200"
               disabled={isSending}
+              noOutline
             />
           </div>
 

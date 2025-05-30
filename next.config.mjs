@@ -18,12 +18,6 @@ const nextConfig = {
       },
     ],
   },
-  // Habilitamos Edge Functions para imágenes
-  experimental: {
-    images: {
-      allowFutureImage: true,
-    },
-  },
 }
 
 export default nextConfig

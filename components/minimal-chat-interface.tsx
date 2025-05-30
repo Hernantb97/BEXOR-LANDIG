@@ -647,19 +647,8 @@ export default function MinimalChatInterface({ businessId }: MinimalChatInterfac
           status: 'sent',
           type: 'text',
           sender_type: 'agent',  // Marcar explícitamente como enviado por agente
-          created_at: timestamp,
-          read: false
+          user_id: 'agent'
         };
-        
-        // Añadir explícitamente el atributo user_id para la detección en transformMessage
-        (optimisticMessage as any).user_id = 'agent';
-        // Añadir metadata para mejorar la detección del lado del servidor
-        (optimisticMessage as any).metadata = {
-          source: 'dashboard',
-          sender_type: 'agent'
-        };
-        
-        console.log(`💾 Creado mensaje optimista temporal con ID: ${tempId}`);
         
         // Añadir el mensaje a la lista de mensajes enviados recientemente
         // para evitar duplicados al recibir eventos de Supabase Realtime

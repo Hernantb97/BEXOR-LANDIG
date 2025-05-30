@@ -13,7 +13,7 @@ interface UIMessage {
   status: string;
   type: string;
   user_id?: string;
-  error?: boolean;
+  error?: boolean | string;
   sender_type?: string;
 }
 
@@ -278,7 +278,7 @@ export async function sendMessage(message: Partial<Message>): Promise<Message | 
       
       if (existingMessages && existingMessages.length > 0) {
         // Verificar si hay mensajes idénticos recientes (dentro de 5 segundos)
-        const isDuplicate = existingMessages.some(msg => {
+        const isDuplicate = existingMessages.some((msg: any) => {
           const msgTime = new Date(msg.created_at).getTime();
           const now = Date.now();
           return now - msgTime < 5000;
@@ -389,25 +389,25 @@ export async function handleOptimisticMessageUpdate(
 /**
  * Transforma un mensaje de la base de datos al formato UI
  */
-export function transformMessage(message: any): UIMessage {
+export function transformMessage(msg: any): UIMessage {
   console.log('🔄 Transformando mensaje individual:', {
-    id: message.id,
-    content: message.content,
-    sender_type: message.sender_type,
-    sender: message.sender
+    id: msg.id,
+    content: msg.content,
+    sender_type: msg.sender_type,
+    sender: msg.sender
   });
   
   // Verificar si el mensaje ya tiene el formato UIMessage
-  if (message.sender === 'me' || message.sender === 'them') {
+  if (msg.sender === 'me' || msg.sender === 'them') {
     // Asegurar que tiene sender_type si ya tiene sender
-    if (!message.sender_type) {
-      message.sender_type = message.sender === 'me' ? 'agent' : 'user';
+    if (!msg.sender_type) {
+      msg.sender_type = msg.sender === 'me' ? 'agent' : 'user';
     }
-    return message as UIMessage;
+    return msg as UIMessage;
   }
   
   // Asegurarse de que siempre hay un timestamp válido
-  let timestamp = message.timestamp || message.created_at || new Date().toISOString();
+  let timestamp = msg.timestamp || msg.created_at || new Date().toISOString();
   
   // Verificar y corregir formato de timestamp si es necesario
   if (typeof timestamp === 'string') {
@@ -431,38 +431,38 @@ export function transformMessage(message: any): UIMessage {
   let isSentByMe = false;
   
   // La regla más importante: los mensajes con sender_type 'agent' o 'bot' se muestran a la derecha (me)
-  if (message.sender_type === 'agent' || message.sender_type === 'bot' || message.sender_type === 'system') {
+  if (msg.sender_type === 'agent' || msg.sender_type === 'bot' || msg.sender_type === 'system') {
     isSentByMe = true;
   }
   
   // Si es una conversación específica del dashboard, hacer verificación adicional
-  const conversationId = message.conversation_id || message.conversationId;
+  const conversationId = msg.conversation_id || msg.conversationId;
   if (conversationId === '4a42aa05-2ffd-418b-aa52-29e7c571eee8') {
     // Si no tiene sender_type pero viene de esta conversación específica, 
     // asumir que es mensaje del dashboard
-    if (!message.sender_type) {
+    if (!msg.sender_type) {
       isSentByMe = true;
-      message.sender_type = 'agent';
+      msg.sender_type = 'agent';
     }
   }
   
   // Contenido del mensaje
-  const content = message.content || message.message || "";
+  const content = msg.content || msg.message || "";
   
   // Log para depuración
-  console.log(`Mensaje ${message.id?.substring(0, 8) || 'nuevo'}: sender_type=${message.sender_type}, visualización=${isSentByMe ? 'derecha (me)' : 'izquierda (them)'}`);
+  console.log(`Mensaje ${msg.id?.substring(0, 8) || 'nuevo'}: sender_type=${msg.sender_type}, visualización=${isSentByMe ? 'derecha (me)' : 'izquierda (them)'}`);
   
   const transformedMessage = {
-    id: message.id || `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-    conversationId: message.conversationId || message.conversation_id,
+    id: msg.id || `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+    conversationId: msg.conversationId || msg.conversation_id,
     content: content,
     timestamp: timestamp,
-    sender: isSentByMe ? 'me' : 'them',
-    status: message.status || "sent",
-    type: message.type || "text",
-    user_id: message.user_id || "",
-    sender_type: message.sender_type || (isSentByMe ? 'agent' : 'user'),
-    error: message.error || false
+    sender: (isSentByMe ? 'me' : 'them') as 'me' | 'them',
+    status: msg.status || "sent",
+    type: msg.type || "text",
+    user_id: msg.user_id || "",
+    sender_type: msg.sender_type || (isSentByMe ? 'agent' : 'user'),
+    error: msg.error || false
   };
   
   console.log('✅ Mensaje transformado:', {

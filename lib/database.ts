@@ -106,7 +106,7 @@ export async function fetchUserConversations(userId: string): Promise<Conversati
         return []
       }
       
-      const businessIds = userBusinesses?.map(ub => ub.business_id) || []
+      const businessIds = userBusinesses?.map((ub: { business_id: string }) => ub.business_id) || []
       
       // Cachear el resultado para futuras llamadas
       _userBusinessCache[userId] = businessIds;
@@ -122,7 +122,7 @@ export async function fetchUserConversations(userId: string): Promise<Conversati
         .limit(10)
       
       if (!allBError && allBusinesses && allBusinesses.length > 0) {
-        allBusinesses.forEach(b => businessIds.push(b.id))
+        allBusinesses.forEach((b: { id: string }) => businessIds.push(b.id))
         _userBusinessCache[userId] = businessIds; // Actualizar la caché
       }
     }
@@ -147,8 +147,8 @@ export async function fetchUserConversations(userId: string): Promise<Conversati
         
         if (businessConversations && businessConversations.length > 0) {
           // Agregar conversaciones sin duplicados
-          const newConvs = businessConversations.filter(bc => 
-            !allConversations.some(ac => ac.id === bc.id)
+          const newConvs = businessConversations.filter((bc: Conversation) => 
+            !allConversations.some((ac: Conversation) => ac.id === bc.id)
           )
           
           if (newConvs.length > 0) {
@@ -167,7 +167,7 @@ export async function fetchUserConversations(userId: string): Promise<Conversati
         .limit(50) // Limitamos a 50 en lugar de 100 para optimizar
       
       if (!allConvError && allConversations_backup && allConversations_backup.length > 0) {
-        const relevantConversations = allConversations_backup.filter(conv => 
+        const relevantConversations = allConversations_backup.filter((conv: Conversation) => 
           businessIds.includes(conv.business_id || '') || conv.user_id === userId
         )
         
@@ -186,7 +186,7 @@ export async function fetchUserConversations(userId: string): Promise<Conversati
     }
     
     // Pre-verificar permisos para todas las conversaciones de una sola vez
-    allConversations.forEach(conv => {
+    allConversations.forEach((conv: Conversation) => {
       _conversationPermissionCache[userId][conv.id] = true;
     });
     

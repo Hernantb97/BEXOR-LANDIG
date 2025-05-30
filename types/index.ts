@@ -74,7 +74,7 @@ export interface UIMessage {
   file_name?: string
   file_size?: string
   publicUrl?: string
-  error?: string
+  error?: boolean | string
   sender_type?: "user" | "bot" | "agent"
 }
 

@@ -575,7 +575,7 @@ export async function toggleBot(conversationId: string, active: boolean) {
       throw new Error('El parámetro active debe ser un booleano');
     }
     // Llamada real al endpoint del backend
-    const response = await fetch(`/api/conversations/${conversationId}/toggle-bot`, {
+    const response = await fetch(`${API_BASE_URL}/api/conversations/${conversationId}/toggle-bot`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
