@@ -92,3 +92,19 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Fondo del chat en modo claro */
+.chat-background {
+  background-color: #f0f2f5;
+  background-image: url('/fondo_chats/chat-bg-light.png');
+  background-repeat: repeat;
+  background-size: cover;
+}
+
+/* Fondo del chat en modo oscuro */
+.dark .chat-background {
+  background-color: #1e1e2d;
+  background-image: url('/fondo_chats/DARK4.png.png');
+  background-repeat: repeat;
+  background-size: cover;
+}
