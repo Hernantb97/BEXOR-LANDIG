@@ -40,8 +40,8 @@ export default function LoginDirect() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-muted">
+      <div className="w-full max-w-md p-8 space-y-8 bg-card rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">Inicio de sesión (Cliente Directo)</h1>
           <p className="mt-2 text-sm text-gray-600">

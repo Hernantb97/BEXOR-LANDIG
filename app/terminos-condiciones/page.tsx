@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react"
 
 export default function TermsAndConditionsPage() {
   return (
-    <main className="min-h-screen bg-white pt-24 pb-16">
+    <main className="min-h-screen bg-background pt-24 pb-16">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <Link href="/">
