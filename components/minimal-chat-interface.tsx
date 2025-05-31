@@ -1059,10 +1059,10 @@ export default function MinimalChatInterface({ businessId }: MinimalChatInterfac
   const handleLogout = useCallback(async () => {
     try {
       await supabase.auth.signOut()
-      router.push('/login')
+      router.push('/dashboard/login')
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
-      router.push('/login')
+      router.push('/dashboard/login')
     }
   }, [router])
 
@@ -1158,7 +1158,7 @@ export default function MinimalChatInterface({ businessId }: MinimalChatInterfac
                   description: "No se pudo restaurar la sesión. Por favor, inicie sesión nuevamente.",
                   variant: "destructive"
                 });
-                router.push('/login');
+                router.push('/dashboard/login');
               } else {
                 console.log('✅ Sesión restaurada correctamente');
                 toast({

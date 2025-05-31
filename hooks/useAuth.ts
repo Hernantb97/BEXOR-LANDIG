@@ -19,11 +19,11 @@ export function useAuth() {
         
         setUser(session?.user || null)
         if (!session) {
-          router.push('/login')
+          router.push('/dashboard/login')
         }
       } catch (error) {
         console.error('Error al obtener la sesión:', error)
-        router.push('/login')
+        router.push('/dashboard/login')
       } finally {
         setLoading(false)
       }
@@ -35,7 +35,7 @@ export function useAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       setUser(session?.user || null)
       if (!session) {
-        router.push('/login')
+        router.push('/dashboard/login')
       }
     })
 
@@ -65,7 +65,7 @@ export function useAuth() {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       
-      router.push('/login')
+      router.push('/dashboard/login')
     } catch (error: any) {
       throw new Error(error.message || 'Error al cerrar sesión')
     }

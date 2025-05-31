@@ -894,19 +894,15 @@ export default function ConfigPanel() {
         </Button>
       </div>
       
-      <Tabs defaultValue="general">
+      <Tabs defaultValue="openai">
         <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="general" className="flex items-center">
+          <TabsTrigger value="openai" className="flex items-center">
             <MessageCircle className="mr-2 h-4 w-4" />
             <span>OpenAI</span>
           </TabsTrigger>
           <TabsTrigger value="documents" className="flex items-center">
             <FileText className="mr-2 h-4 w-4" />
             <span>Documentos</span>
-          </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center">
-            <Bell className="mr-2 h-4 w-4" />
-            <span>Notificaciones</span>
           </TabsTrigger>
           <TabsTrigger value="calendar" className="flex items-center">
             <Calendar className="mr-2 h-4 w-4" />
@@ -919,7 +915,7 @@ export default function ConfigPanel() {
         </TabsList>
         
         {/* Configuración de OpenAI */}
-        <TabsContent value="general">
+        <TabsContent value="openai">
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Columna izquierda: Formulario */}
             <Card>
@@ -981,73 +977,149 @@ export default function ConfigPanel() {
                 </div>
               </CardContent>
             </Card>
-            {/* Columna derecha: Instrucciones Google Calendar */}
+            {/* Columna derecha: Palabras Clave para Notificaciones (mover aquí) */}
             <Card>
               <CardHeader>
-                <CardTitle>Instrucciones Google Calendar</CardTitle>
-                <div className="mb-2 mt-2 p-2 bg-blue-100 text-blue-800 rounded text-sm font-semibold text-center">
-                  Copia y pega esto en las instrucciones del asistente para que pueda consultar y generar citas una vez activado Google Calendar
-                </div>
-                <div className="flex justify-end mb-2">
-                  <CopyInstructionsButton />
-                </div>
+                <CardTitle>Palabras Clave para Notificaciones</CardTitle>
+                <CardDescription>
+                  Define palabras clave que activarán notificaciones y cambios en el dashboard cuando aparezcan en las conversaciones
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div id="calendar-instructions-block">
-                    <ol className="list-decimal list-inside mb-2">
-                      <li>Cuando un usuario pregunte por disponibilidad, usa <b>get_calendar_info</b> con la fecha mencionada.</li>
-                      <li>Si el usuario quiere agendar una cita, primero verifica disponibilidad con <b>get_calendar_info</b> y luego usa <b>schedule_appointment</b>.</li>
-                      <li>Si el usuario pregunta por sus citas, usa <b>find_customer_appointments</b>.</li>
-                      <li>Si el usuario quiere cancelar una cita, usa <b>delete_calendar_event</b>.</li>
-                    </ol>
-                    <div className="mb-2">
-                      <b>Importante:</b>
-                      <ul className="list-disc list-inside mt-1 space-y-1">
-                        <li>Siempre confirma los detalles antes de agendar (fecha, hora, nombre).</li>
-                        <li>Usa el formato correcto para fechas (YYYY-MM-DD) y horas (HH:MM).</li>
-                        <li>Para agendar citas, <b>SIEMPRE</b> usa el número de teléfono del usuario que está haciendo la consulta.</li>
-                        <li><b>NO</b> inventes horarios disponibles. <b>SIEMPRE</b> consulta primero con get_calendar_info.</li>
-                        <li>TODAS las fechas y horas se manejan en la zona horaria de Ciudad de México (America/Mexico_City).</li>
-                        <li>Cuando el usuario mencione fechas relativas como "mañana", "pasado mañana", o "la próxima semana", debes calcularlas correctamente basándote en la fecha actual en México.</li>
-                        <li><b>SIEMPRE</b> verifica los días de la semana correctamente. Si hoy es 20 de mayo de 2025 (martes), entonces "mañana" es 21 de mayo de 2025 (miércoles).</li>
-                        <li>Antes de ofrecer un horario, verifica que sea válido para el día de la semana correcto según la fecha.</li>
-                      </ul>
+              <CardContent className="space-y-4">
+                <div className="flex gap-2 mb-4">
+                  <Input
+                    placeholder="Nueva palabra clave"
+                    value={newKeyword}
+                    onChange={(e) => setNewKeyword(e.target.value)}
+                    disabled={savingKeyword}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addKeyword();
+                      }
+                    }}
+                  />
+                  <Button 
+                    variant="outline" 
+                    onClick={addKeyword}
+                    disabled={!newKeyword.trim() || savingKeyword}
+                  >
+                    {savingKeyword ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <PlusCircle className="h-4 w-4 mr-1" />
+                    )}
+                    Añadir
+                  </Button>
+                </div>
+                {loadingKeywords ? (
+                  <div className="flex justify-center items-center py-4">
+                    <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                    <span className="ml-2 text-sm text-gray-500">Cargando palabras clave...</span>
+                  </div>
+                ) : keywords.length === 0 ? (
+                  <div className="bg-blue-50 text-blue-700 p-4 rounded-md text-center">
+                    <p>No hay palabras clave configuradas</p>
+                    <p className="text-sm mt-1">Añade palabras clave para activar notificaciones automáticas</p>
+                  </div>
+                ) : (
+                  <div className="border rounded-md overflow-hidden">
+                    <div className="max-h-[300px] overflow-y-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50 sticky top-0 z-10">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Palabra Clave</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {keywords.map((keyword, index) => (
+                            <tr key={`keyword-${keyword.id || index}`} className="hover:bg-gray-50">
+                              <td className="px-6 py-4">
+                                {editingKeywordId === keyword.id ? (
+                                  <Input
+                                    value={editingKeywordValue}
+                                    onChange={(e) => setEditingKeywordValue(e.target.value)}
+                                    className="max-w-[180px]"
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        saveKeywordEdit(keyword.id);
+                                      }
+                                      if (e.key === 'Escape') {
+                                        e.preventDefault();
+                                        cancelKeywordEdit();
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="text-base font-medium text-gray-900 break-words max-w-[180px]">
+                                    {typeof keyword === 'string' 
+                                      ? keyword 
+                                      : keyword.keyword || keyword.text || keyword.value || keyword.palabra || 
+                                        (keyword.id ? `Palabra clave ${index+1}` : JSON.stringify(keyword))}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Switch 
+                                  checked={keyword.enabled} 
+                                  onCheckedChange={() => toggleKeywordEnabled(keyword.id, keyword.enabled)}
+                                />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {editingKeywordId === keyword.id ? (
+                                  <div className="space-x-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => saveKeywordEdit(keyword.id)}
+                                    >
+                                      <Check className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={cancelKeywordEdit}
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="space-x-2">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => startEditingKeyword(keyword.id, keyword.keyword)}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                      onClick={() => deleteKeyword(keyword.id)}
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <div className="mt-4 p-2 bg-gray-100 rounded text-xs text-gray-700 flex items-center gap-2">
-                    <span className="font-semibold">ID del Negocio:</span>
-                    <span id="business-id-copy" className="font-mono select-all text-base">{businessConfig?.id || '—'}</span>
-                  </div>
-                </div>
+                )}
+                <p className="text-sm text-gray-500 mt-4">
+                  Las palabras clave definidas activarán notificaciones automáticas cuando aparezcan en las conversaciones. 
+                  También moverán a los clientes a la columna de prioridad en el dashboard.
+                </p>
               </CardContent>
             </Card>
-          </div>
-          
-          <div className="mt-6 flex justify-end">
-            <Button 
-              onClick={saveAssistantConfig}
-              disabled={loading}
-              className={saveSuccess ? "bg-green-500 hover:bg-green-600" : ""}
-              size="lg"
-            >
-              {loading ? (
-                <span className="flex items-center">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Guardando...
-                </span>
-              ) : saveSuccess ? (
-                <span className="flex items-center">
-                  <Check className="mr-2 h-4 w-4" />
-                  ¡Guardado con éxito!
-                </span>
-              ) : (
-                <span className="flex items-center">
-                  <Save className="mr-2 h-4 w-4" />
-                  Guardar Configuración
-                </span>
-              )}
-            </Button>
           </div>
         </TabsContent>
         
@@ -1184,176 +1256,6 @@ export default function ConfigPanel() {
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        
-        {/* Modificación de la pestaña de Notificaciones */}
-        <TabsContent value="notifications">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configuración de Notificaciones</CardTitle>
-                <CardDescription>
-                  Configura qué notificaciones recibir y cómo recibirlas
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between space-x-2">
-                  <Label htmlFor="push-notifications">Notificaciones Push</Label>
-                  <Switch id="push-notifications" />
-                </div>
-                <div className="flex items-center justify-between space-x-2">
-                  <Label htmlFor="email-notifications">Notificaciones por Email</Label>
-                  <Switch id="email-notifications" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Palabras Clave para Notificaciones</CardTitle>
-                <CardDescription>
-                  Define palabras clave que activarán notificaciones y cambios en el dashboard cuando aparezcan en las conversaciones
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2 mb-4">
-                  <Input
-                    placeholder="Nueva palabra clave"
-                    value={newKeyword}
-                    onChange={(e) => setNewKeyword(e.target.value)}
-                    disabled={savingKeyword}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        addKeyword();
-                      }
-                    }}
-                  />
-                  <Button 
-                    variant="outline" 
-                    onClick={addKeyword}
-                    disabled={!newKeyword.trim() || savingKeyword}
-                  >
-                    {savingKeyword ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <PlusCircle className="h-4 w-4 mr-1" />
-                    )}
-                    Añadir
-                  </Button>
-                </div>
-                
-                {loadingKeywords ? (
-                  <div className="flex justify-center items-center py-4">
-                    <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                    <span className="ml-2 text-sm text-gray-500">Cargando palabras clave...</span>
-                  </div>
-                ) : keywords.length === 0 ? (
-                  <div className="bg-blue-50 text-blue-700 p-4 rounded-md text-center">
-                    <p>No hay palabras clave configuradas</p>
-                    <p className="text-sm mt-1">Añade palabras clave para activar notificaciones automáticas</p>
-                  </div>
-                ) : (
-                  <div className="border rounded-md overflow-hidden">
-                    <div className="max-h-[300px] overflow-y-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 sticky top-0 z-10">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Palabra Clave</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {keywords.map((keyword, index) => (
-                            <tr key={`keyword-${keyword.id || index}`} className="hover:bg-gray-50">
-                              <td className="px-6 py-4">
-                                {editingKeywordId === keyword.id ? (
-                                  <Input
-                                    value={editingKeywordValue}
-                                    onChange={(e) => setEditingKeywordValue(e.target.value)}
-                                    className="max-w-[180px]"
-                                    autoFocus
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        saveKeywordEdit(keyword.id);
-                                      }
-                                      if (e.key === 'Escape') {
-                                        e.preventDefault();
-                                        cancelKeywordEdit();
-                                      }
-                                    }}
-                                  />
-                                ) : (
-                                  <div className="text-base font-medium text-gray-900 break-words max-w-[180px]">
-                                    {/* Renderizar el texto de la palabra clave usando cualquier propiedad disponible */}
-                                    {typeof keyword === 'string' 
-                                      ? keyword 
-                                      : keyword.keyword || keyword.text || keyword.value || keyword.palabra || 
-                                        (keyword.id ? `Palabra clave ${index+1}` : JSON.stringify(keyword))}
-                                  </div>
-                                )}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <Switch 
-                                  checked={keyword.enabled} 
-                                  onCheckedChange={() => toggleKeywordEnabled(keyword.id, keyword.enabled)}
-                                />
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                {editingKeywordId === keyword.id ? (
-                                  <div className="space-x-2">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => saveKeywordEdit(keyword.id)}
-                                    >
-                                      <Check className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={cancelKeywordEdit}
-                                    >
-                                      <X className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  <div className="space-x-2">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => startEditingKeyword(keyword.id, keyword.keyword)}
-                                    >
-                                      <Edit className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                      onClick={() => deleteKeyword(keyword.id)}
-                                    >
-                                      <Trash className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-                
-                <p className="text-sm text-gray-500 mt-4">
-                  Las palabras clave definidas activarán notificaciones automáticas cuando aparezcan en las conversaciones. 
-                  También moverán a los clientes a la columna de prioridad en el dashboard.
-                </p>
               </CardContent>
             </Card>
           </div>
