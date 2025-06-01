@@ -11,7 +11,7 @@ export const businessConfigFallback = {
     business_name: "Hernán Tenorio",
     vector_store_id: "vs_67be1490f4448191908b08fbf4c4d508",
     openai_assistant_id: "asst_bdJlX30wF1qQH3Lf8ZoiptVx",
-    openai_api_key: process.env.OPENAI_API_KEY || "***REMOVED***proj-mofAT5Vu4hmL1NmOBjQiK18v8vuAqe8ETJX7ZJSIjigdlp7CEokUax15RsyD4sIrN2TFdJpGv5T3BlbkFJn0WFt5zfZ07BD3n2hpvTdZIJbfexIMPHpez1qDPaM0Al_BJ0D8fbcH0-FZ1OKjTVFv6IR5yh4A",
+    openai_api_key: process.env.OPENAI_API_KEY,
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
