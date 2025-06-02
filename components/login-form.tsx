@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/lib/supabase"
 import { loginDirectly } from "@/lib/supabase-direct"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 
 // Usar el cliente único de Supabase importado desde @/lib/supabase
 
@@ -23,6 +24,11 @@ export default function LoginForm() {
   const [error, setError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [usingFallback, setUsingFallback] = useState(false)
+  const [showResetModal, setShowResetModal] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetMessage, setResetMessage] = useState("")
+  const resetEmailInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -286,6 +292,31 @@ export default function LoginForm() {
     }
   }
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setResetMessage("")
+    setResetLoading(true)
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ""
+      const res = await fetch(`${baseUrl}/api/request-password-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: resetEmail })
+      })
+      if (res.ok) {
+        setResetMessage("Si el correo está registrado, recibirás un email con instrucciones para recuperar tu contraseña.")
+        setResetEmail("")
+      } else {
+        const data = await res.json()
+        setResetMessage(data.error || "Ocurrió un error. Intenta de nuevo.")
+      }
+    } catch (err) {
+      setResetMessage("Ocurrió un error. Intenta de nuevo.")
+    } finally {
+      setResetLoading(false)
+    }
+  }
+
   return (
     <Card className="shadow-lg border-0">
       <form onSubmit={handleSubmit}>
@@ -305,18 +336,46 @@ export default function LoginForm() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <Label htmlFor="password">Contraseña</Label>
-              <button
-                type="button"
-                className="text-xs text-[#0b1e32] hover:underline"
-                onClick={() =>
-                  toast({
-                    title: "Recuperar contraseña",
-                    description: "Se ha enviado un correo con instrucciones para recuperar tu contraseña.",
-                  })
-                }
-              >
-                ¿Olvidaste tu contraseña?
-              </button>
+              <Dialog open={showResetModal} onOpenChange={setShowResetModal}>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-xs text-[#0b1e32] hover:underline"
+                    onClick={() => {
+                      setShowResetModal(true)
+                      setTimeout(() => resetEmailInputRef.current?.focus(), 100)
+                    }}
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Recuperar contraseña</DialogTitle>
+                    <DialogDescription>
+                      Ingresa tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handlePasswordReset} className="space-y-4">
+                    <Input
+                      ref={resetEmailInputRef}
+                      type="email"
+                      placeholder="tu@ejemplo.com"
+                      value={resetEmail}
+                      onChange={e => setResetEmail(e.target.value)}
+                      required
+                      className="h-11"
+                      autoFocus
+                    />
+                    <DialogFooter>
+                      <Button type="submit" className="w-full" disabled={resetLoading}>
+                        {resetLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Enviar instrucciones"}
+                      </Button>
+                    </DialogFooter>
+                    {resetMessage && <div className="text-sm text-center text-gray-600 mt-2">{resetMessage}</div>}
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="relative">
               <Input
