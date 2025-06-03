@@ -115,14 +115,10 @@ interface WhatsAppResponse {
  * @returns ID del negocio válido
  */
 function getValidBusinessId(providedId?: string): string {
-  // Si no se proporciona ID o es inválido, usar el ID hardcodeado
   if (!providedId || providedId.trim() === '') {
-    if (DEFAULT_BUSINESS_ID === '2d385aa5-40e0-4ec9-9360-19281bc605e4') {
-      console.log('[api-client] ⚠️ Se detectó el uso del ID hardcodeado conocido:', DEFAULT_BUSINESS_ID);
-    }
-    return DEFAULT_BUSINESS_ID;
-    }
-    return providedId;
+    throw new Error('No se encontró un businessId válido para el remitente. El usuario debe estar logueado en un negocio.');
+  }
+  return providedId;
 }
 
 /**

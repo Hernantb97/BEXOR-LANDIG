@@ -701,7 +701,8 @@ export default function MinimalChatInterface({ businessId }: MinimalChatInterfac
         
         // Enviar el mensaje a través de la API
         console.log(`📤 Enviando mensaje "${content}" a la API para conversación ${conversationId}`);
-        const response = await sendMessage(conversationId, content, undefined, 'agent');
+        let response;
+        response = await sendMessage(conversationId, content, realBusinessId, 'agent');
         
         if (response) {
           console.log(`✅ Mensaje enviado correctamente a través de la API:`, response);

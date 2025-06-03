@@ -19,7 +19,7 @@ export const API_BASE_URL_OLD = process.env.NEXT_PUBLIC_API_URL || 'http://local
 const isDevelopment = process.env.NODE_ENV !== 'production';
 export const WHATSAPP_BOT_URL = 'https://whatsapp-bot-if6z.onrender.com';
 
-export const DEFAULT_BUSINESS_ID = process.env.NEXT_PUBLIC_DEFAULT_BUSINESS_ID || '2d385aa5-40e0-4ec9-9360-19281bc605e4';
+export const DEFAULT_BUSINESS_ID = process.env.NEXT_PUBLIC_DEFAULT_BUSINESS_ID || '';
 export const BOT_API_BASE_URL = WHATSAPP_BOT_URL;
 
 // Configuración para modo de datos
