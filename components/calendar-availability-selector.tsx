@@ -35,6 +35,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { API_BASE_URL } from './config'
 
 interface TimeSlot {
   time: string;
@@ -141,7 +142,7 @@ export default function CalendarAvailabilitySelector({
     console.log(`Fetching events for month: ${format(month, 'MMMM yyyy', { locale: es })}`);
     
     try {
-      const response = await fetch('http://localhost:3095/api/calendar/availability', {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/availability`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -246,7 +247,7 @@ export default function CalendarAvailabilitySelector({
       const dateString = format(selectedDate, 'yyyy-MM-dd');
       console.log("Consultando disponibilidad con fecha:", dateString);
       
-      const response = await fetch('http://localhost:3095/api/calendar/availability', {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/availability`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -414,7 +415,7 @@ export default function CalendarAvailabilitySelector({
     if (!businessId) return;
     setIsLoadingBusinessHours(true);
     try {
-      const response = await fetch(`http://localhost:3095/api/business/hours/${businessId}`);
+      const response = await fetch(`${API_BASE_URL}/api/business/hours/${businessId}`);
       const data = await response.json();
       if (data.success && data.data && data.data.hours) {
         // Adaptar la respuesta del backend al formato esperado
@@ -823,7 +824,7 @@ export default function CalendarAvailabilitySelector({
     setIsSaving(true);
     
     try {
-      const response = await fetch(`http://localhost:3095/api/calendar/events?businessId=${businessId}&event_id=${selectedEvent.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/calendar/events?businessId=${businessId}&event_id=${selectedEvent.id}`, {
         method: 'DELETE',
       });
       
