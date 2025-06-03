@@ -17,4 +17,10 @@
   NODE_VERSION = "18"
 
 [functions]
-  node_bundler = "esbuild" 
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/google-auth-callback"
+  to = "https://whatsapp-bot-if6z.onrender.com/google-auth-callback"
+  status = 200
+  force = true 
