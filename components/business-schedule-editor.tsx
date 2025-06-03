@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Clock, Save, Info, AlertCircle, Loader2 } from 'lucide-react'
 import { cn } from "@/lib/utils"
+import { API_BASE_URL } from './config'
 
 interface TimeSlot {
   from: string
@@ -79,7 +80,7 @@ export default function BusinessScheduleEditor({ businessId, onAfterSave }: Busi
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3095/api/business/hours/${businessId}`);
+        const response = await fetch(`${API_BASE_URL}/api/business/hours/${businessId}`);
         const data = await response.json();
         console.log('Datos recibidos del backend:', data.data); // DEPURACIÓN
         if (data.success && data.data) {
@@ -132,7 +133,7 @@ export default function BusinessScheduleEditor({ businessId, onAfterSave }: Busi
       }
       console.log('Guardando horarios...', payload)
 
-      const response = await fetch('http://localhost:3095/api/business/hours', {
+      const response = await fetch(`${API_BASE_URL}/api/business/hours`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
