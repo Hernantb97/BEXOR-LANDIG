@@ -99,13 +99,6 @@ export default function AiChat({
     }
   }, [threadId, initialMessage, messages.length]);
 
-  // Scroll to bottom when messages update
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
-  }, [messages]);
-
   // Prevent scroll events from bubbling
   useEffect(() => {
     const handleWheel = (e: Event) => {

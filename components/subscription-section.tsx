@@ -95,99 +95,64 @@ export default function SubscriptionSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="lg:w-3/5 bg-white rounded-xl shadow-lg overflow-hidden"
+            className="w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden"
           >
             <div className="p-6 bg-primary text-white">
               <h3 className="text-2xl font-bold">Plan Completo</h3>
             </div>
 
             <div className="p-6">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-4 text-lg font-semibold text-primary">Característica</th>
-                    <th className="text-left py-4 text-lg font-semibold text-primary">Descripción</th>
-                    <th className="w-20 text-center py-4 text-lg font-semibold text-primary">Incluido</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {features.map((feature, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="py-4 font-medium text-gray-800">{feature.title}</td>
-                      <td className="py-4 text-gray-600">{feature.description}</td>
-                      <td className="py-4 text-center">
-                        {feature.included === true ? (
-                          <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100">
-                            <Check className="h-5 w-5 text-green-600" />
-                          </div>
-                        ) : feature.included === "dash" ? (
-                          <div className="inline-flex items-center justify-center w-8 h-8">
-                            <span className="h-0.5 w-5 bg-gray-400"></span>
-                          </div>
-                        ) : (
-                          <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100">
-                            <span className="h-5 w-5 text-red-600">—</span>
-                          </div>
-                        )}
-                      </td>
+              <div className="flex justify-center">
+                <table className="w-auto mx-auto">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-4 text-lg font-semibold text-primary">Característica</th>
+                      <th className="text-left py-4 text-lg font-semibold text-primary">Descripción</th>
+                      <th className="w-20 text-center py-4 text-lg font-semibold text-primary">Incluido</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {features.map((feature, index) => (
+                      <tr key={index} className="border-b border-gray-100">
+                        <td className="py-4 font-medium text-gray-800">{feature.title}</td>
+                        <td className="py-4 text-gray-600">{feature.description}</td>
+                        <td className="py-4 text-center">
+                          {feature.included === true ? (
+                            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100">
+                              <Check className="h-5 w-5 text-green-600" />
+                            </div>
+                          ) : feature.included === "dash" ? (
+                            <div className="inline-flex items-center justify-center w-8 h-8">
+                              <span className="h-0.5 w-5 bg-gray-400"></span>
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100">
+                              <span className="h-5 w-5 text-red-600">—</span>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </motion.div>
-
-          {/* Capturas de pantalla - Lado derecho */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, x: 20 }}
-            whileInView={{ opacity: 1, y: 0, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:w-2/5 flex flex-col gap-4"
+        </div>
+        <div className="max-w-2xl mx-auto mt-8">
+          <Button
+            size="lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-all shadow-md hover:shadow-lg"
+            onClick={() => window.open(
+              "https://wa.me/15557033313?text=" +
+                encodeURIComponent(
+                  "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
+                ),
+              "_blank"
+            )}
           >
-            <h3 className="text-xl font-bold text-primary mb-2">Conoce la experiencia de usuario</h3>
-            
-            {screenshots.map((screenshot, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-                className="bg-white rounded-xl shadow-md overflow-hidden"
-              >
-                <div className="relative h-[180px] w-full">
-                  <Image
-                    src={screenshot.src}
-                    alt={screenshot.alt}
-                    fill
-                    style={{ objectFit: "cover", objectPosition: "top" }}
-                    className="rounded-t-lg"
-                  />
-                </div>
-                <div className="p-4">
-                  <h4 className="font-semibold text-primary">{screenshot.title}</h4>
-                  <p className="text-sm text-gray-600">{screenshot.description}</p>
-                </div>
-              </motion.div>
-            ))}
-            
-            <div className="mt-auto pt-4">
-              <Button
-                size="lg"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-all shadow-md hover:shadow-lg"
-                onClick={() => window.open(
-                  "https://wa.me/15557033313?text=" +
-                    encodeURIComponent(
-                      "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
-                    ),
-                  "_blank"
-                )}
-              >
-                Contratar Asistente
-              </Button>
-            </div>
-          </motion.div>
+            Contratar Asistente
+          </Button>
         </div>
       </div>
     </section>

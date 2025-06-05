@@ -109,3 +109,8 @@
 .prose blockquote {
   @apply border-l-4 border-secondary pl-4 italic my-6;
 }
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}

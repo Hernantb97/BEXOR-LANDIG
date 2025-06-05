@@ -35,13 +35,7 @@ export default function HeroSection() {
     }, 600);
   };
 
-  const scrollToDemo = () => {
-    // Hacer scroll al formulario de demostración
-    const demoForm = document.querySelector('.demo-form');
-    if (demoForm) {
-      demoForm.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const scrollToDemo = () => {};
 
   return (
     <section className="relative py-24 md:py-28 lg:py-32 overflow-hidden bg-primary/95 min-h-[80vh]">

@@ -39,7 +39,7 @@ export default function PartnersLogoCarousel({ className }: LogoCarouselProps) {
   }, []);
 
   return (
-    <div className={`flex justify-center items-center gap-8 py-5 ${className || ""}`}>
+    <div className={`flex justify-evenly items-center gap-4 sm:gap-8 py-5 ${className || ""}`}>
       {logos.map((logo, index) => (
         <motion.div
           key={index}

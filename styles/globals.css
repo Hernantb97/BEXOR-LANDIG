@@ -108,3 +108,8 @@ body {
   background-repeat: repeat;
   background-size: cover;
 }
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
