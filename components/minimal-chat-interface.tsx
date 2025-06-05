@@ -1443,6 +1443,16 @@ export default function MinimalChatInterface({ businessId }: MinimalChatInterfac
                 showConfig ? "text-white" : "text-[#2e3c53]"
               )} />
             </Button>
+            {/*
+            // Botón de avión de papel para enviar plantilla (activar cuando se quiera mostrar la página)
+            <Button
+              variant="ghost"
+              className="w-12 h-12 p-0 hover:bg-[#afc5de] dark:hover:bg-[#364863] rounded-xl"
+              onClick={() => router.push('/dashboard/dashboard/send-template')}
+            >
+              <Send className="h-6 w-6" />
+            </Button>
+            */}
           </div>
           <div className="flex flex-col items-center space-y-10 mb-10 mt-10">
             <Button

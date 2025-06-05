@@ -1,5 +1,6 @@
 import type React from "react"
 import { ThemeProvider } from "@/components/theme-provider"
+import { MessageSquare, FileText, Shield, Calendar, Send } from "lucide-react"
 
 // Metadatos para el dashboard
 export const metadata = {
