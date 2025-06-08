@@ -3,11 +3,11 @@ import OpenAI from "openai";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Assistant ID por defecto
-const defaultAssistantId = process.env.NEXT_PUBLIC_OPENAI_ASSISTANT_ID;
+const defaultAssistantId = process.env.OPENAI_ASSISTANT_ID;
 
 // Caché local para guardar asistentes personalizados
 const assistantsCache = new Map<string, string>();
