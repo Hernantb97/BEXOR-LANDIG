@@ -29,7 +29,8 @@ export default function HeroSection() {
     setError('');
     setSent(false);
     try {
-      const res = await fetch('http://localhost:3095/api/contact-form', {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+      const res = await fetch(`${apiBaseUrl}/api/contact-form`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
