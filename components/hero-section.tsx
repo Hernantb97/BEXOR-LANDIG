@@ -4,7 +4,6 @@ import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import GeometricBackground from "./geometric-background"
-import AiChat from "./ai-chat"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,25 +13,39 @@ import PartnersLogoCarousel from "./partners-logo-carousel"
 
 export default function HeroSection() {
   const [showChat, setShowChat] = useState(false)
-  const [botConfig, setBotConfig] = useState<BotConfig>({
-    name: "Asistente AI de BEXOR",
-    instructions: "Eres un asistente de ventas amable y eficiente que ayuda a los clientes interesados en productos y servicios de BEXOR. Debes ser cordial, profesional y dar respuestas concisas."
-  })
-  const [isSaving, setIsSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [form, setForm] = useState({ nombre: '', apellido: '', correo: '', telefono: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
   const chatSectionRef = useRef<HTMLDivElement>(null)
 
-  const handleSaveConfig = () => {
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      setSaved(true);
-      setTimeout(() => {
-        // Mostrar chat automáticamente después de guardar configuración
-        setShowChat(true);
-        setSaved(false);
-      }, 1000);
-    }, 600);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    setError('');
+    setSent(false);
+    try {
+      const res = await fetch('http://localhost:3095/api/contact-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSent(true);
+        setForm({ nombre: '', apellido: '', correo: '', telefono: '' });
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Error al enviar.');
+      }
+    } catch {
+      setError('Error al enviar.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const scrollToDemo = () => {};
@@ -117,93 +130,41 @@ export default function HeroSection() {
               </Button>
             </motion.div>
 
-            {/* Card para la configuración o el chat */}
+            {/* Card para el formulario de contacto */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
               className="w-full bg-white rounded-xl shadow-2xl overflow-hidden relative demo-form"
-              style={{ zIndex: 20, height: showChat ? '500px' : 'auto', minHeight: '420px' }}
+              style={{ zIndex: 20, minHeight: '420px' }}
             >
-              {!showChat ? (
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center text-primary">
-                    <Settings className="h-5 w-5 mr-2" />
-                    Personaliza tu asistente de ventas
-                  </h3>
-                  <div className="space-y-5">
-                    <div className="space-y-2">
-                      <label htmlFor="bot-name" className="text-sm font-medium">
-                        Nombre del asistente
-                      </label>
-                      <Input
-                        id="bot-name"
-                        placeholder="Ej: Ana, el Asistente de Ventas"
-                        value={botConfig.name}
-                        onChange={(e) => setBotConfig({ ...botConfig, name: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="bot-instructions" className="text-sm font-medium">
-                        Instrucciones para el asistente
-                      </label>
-                      <Textarea
-                        id="bot-instructions"
-                        placeholder="Ej: Eres Ana, una experta en ventas de seguros. Debes ser amable y dar respuestas cortas y precisas."
-                        className="min-h-[130px] resize-none"
-                        value={botConfig.instructions}
-                        onChange={(e) => setBotConfig({ ...botConfig, instructions: e.target.value })}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Describe cómo debe comportarse tu asistente, qué conocimientos debe tener y cómo debe interactuar con los clientes.
-                      </p>
-                    </div>
-                    <Button 
-                      onClick={handleSaveConfig} 
-                      disabled={isSaving || saved}
-                      className="w-full mt-2"
-                    >
-                      {saved ? (
-                        <span className="flex items-center justify-center w-full">
-                          <CheckCircle className="h-4 w-4 mr-1" /> Cambios aplicados
-                        </span>
-                      ) : isSaving ? (
-                        <span className="flex items-center justify-center w-full">
-                          Aplicando configuración...
-                        </span>
-                      ) : (
-                        <span className="flex items-center justify-center w-full">
-                          Probar asistente <ArrowRight className="h-4 w-4 ml-2" />
-                        </span>
-                      )}
-                    </Button>
-                  </div>
+              <form className="p-6 space-y-5" onSubmit={handleSubmit}>
+                <h3 className="text-xl font-semibold mb-4 flex items-center text-primary">
+                  <Settings className="h-5 w-5 mr-2" />
+                  Solicita información personalizada
+                </h3>
+                <div className="space-y-2">
+                  <label htmlFor="nombre" className="text-sm font-medium">Nombre</label>
+                  <Input id="nombre" name="nombre" value={form.nombre} onChange={handleChange} required />
                 </div>
-              ) : (
-                <div className="flex flex-col h-full">
-                  <div className="bg-primary/5 py-2 px-4 border-b flex justify-between items-center">
-                    <h3 className="text-sm font-medium text-primary">
-                      {botConfig.name}
-                    </h3>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowChat(false)}
-                      className="h-8 text-xs"
-                    >
-                      Volver a configurar
-                    </Button>
-                  </div>
-                  <div className="flex-1 h-[calc(100%-40px)]">
-                    <AiChat 
-                      botConfig={botConfig} 
-                      className="h-full w-full"
-                      showHeader={false}
-                      initialMessage={`Hola, soy ${botConfig.name}. ¿En qué puedo ayudarte hoy?`}
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label htmlFor="apellido" className="text-sm font-medium">Apellido</label>
+                  <Input id="apellido" name="apellido" value={form.apellido} onChange={handleChange} required />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <label htmlFor="correo" className="text-sm font-medium">Correo electrónico</label>
+                  <Input id="correo" name="correo" type="email" value={form.correo} onChange={handleChange} required />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="telefono" className="text-sm font-medium">Teléfono</label>
+                  <Input id="telefono" name="telefono" value={form.telefono} onChange={handleChange} required />
+                </div>
+                <Button type="submit" className="w-full mt-2" disabled={sending}>
+                  {sending ? 'Enviando...' : 'Enviar solicitud'}
+                </Button>
+                {sent && <p className="text-green-600 text-sm mt-2 flex items-center"><CheckCircle className="h-4 w-4 mr-1" />¡Solicitud enviada correctamente!</p>}
+                {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+              </form>
             </motion.div>
           </div>
         </div>
