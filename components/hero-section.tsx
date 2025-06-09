@@ -70,7 +70,7 @@ export default function HeroSection() {
             className="text-white lg:max-w-2xl text-left lg:pt-6"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Tu nuevo vendedor AI por WhatsApp
+              Tu nuevo vendedor AI por <span className="text-[#25D366]">WhatsApp</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-white/90">
               Activa tu agente de IA personalizado. Automatiza ventas, responde clientes y obtén reportes en tiempo real.
@@ -80,9 +80,9 @@ export default function HeroSection() {
                 size="lg"
                 className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all w-full sm:w-auto mb-4"
                 onClick={() => window.open(
-                  "https://wa.me/15557033313?text=" +
+                  "https://wa.me/15557891179?text=" +
                     encodeURIComponent(
-                      "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
+                      "Hola, quiero agendar una cita para conocer más de BEXOR"
                     ),
                   "_blank"
                 )}

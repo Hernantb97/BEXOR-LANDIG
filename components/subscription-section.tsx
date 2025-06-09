@@ -103,7 +103,7 @@ export default function SubscriptionSection() {
             className="w-full max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden"
           >
             <div className="p-6 bg-primary text-white">
-              <h3 className="text-2xl font-bold">Plan Completo</h3>
+              <h3 className="text-2xl font-bold">Plan Completo /mes</h3>
             </div>
 
             <div className="p-6">
@@ -142,12 +142,11 @@ export default function SubscriptionSection() {
         </div>
         <div className="max-w-2xl mx-auto mt-8">
           <Button
-            size="lg"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-all shadow-md hover:shadow-lg"
+            className="w-full bg-secondary hover:bg-secondary/90 text-white text-lg rounded-lg shadow-lg hover:shadow-xl transition-all mt-6"
             onClick={() => window.open(
-              "https://wa.me/15557033313?text=" +
+              "https://wa.me/15557891179?text=" +
                 encodeURIComponent(
-                  "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
+                  "Hola, quiero agendar una cita para conocer más de BEXOR"
                 ),
               "_blank"
             )}

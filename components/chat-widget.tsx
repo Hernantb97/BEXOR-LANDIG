@@ -348,9 +348,9 @@ export default function ChatWidget({
           size="icon"
           className="h-16 w-16 rounded-full shadow-xl bg-green-600 hover:bg-green-700 relative"
           onClick={() => window.open(
-            "https://wa.me/15557033313?text=" +
+            "https://wa.me/15557891179?text=" +
               encodeURIComponent(
-                "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
+                "Hola, quiero agendar una cita para conocer más de BEXOR"
               ),
             "_blank"
           )}

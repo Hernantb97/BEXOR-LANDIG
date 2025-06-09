@@ -250,9 +250,9 @@ export default function BlogPage() {
               size="lg"
               className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all"
               onClick={() => window.open(
-                "https://wa.me/15557033313?text=" +
+                "https://wa.me/15557891179?text=" +
                   encodeURIComponent(
-                    "Hola me gustaría agendar una cita para conocer más de talles de BEXOR."
+                    "Hola, quiero agendar una cita para conocer más de BEXOR"
                   ),
                 "_blank"
               )}
