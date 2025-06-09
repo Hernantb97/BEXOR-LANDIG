@@ -10,7 +10,7 @@ export default function SubscriptionSection() {
   const features = [
     {
       title: "Instalación del bot",
-      description: "Configuración completa en tu WhatsApp Business",
+      description: "Configuración completa en tu WhatsApp API",
       included: true,
     },
     {
@@ -44,9 +44,14 @@ export default function SubscriptionSection() {
       included: true,
     },
     {
-      title: "Crédito de mensajes de WhatsApp",
-      description: <>Incluye $10 USD en crédito inicial para envío de mensajes a través de WhatsApp Business API (una sola vez, para iniciar). Los mensajes enviados mediante la API oficial de Meta tienen un costo por conversación. <Link href="https://developers.facebook.com/docs/whatsapp/pricing/?locale=es_ES" target="_blank" className="text-blue-400 hover:underline">Consulta aquí las tarifas oficiales de Meta</Link> para más información.</>,
-      included: "dash",
+      title: "Conversaciones Whatsapp",
+      description: "Incluye 500 conversaciones de Whatsapp / mes",
+      included: true,
+    },
+    {
+      title: "Integración Google Calendar",
+      description: "Agenda citas automáticamente",
+      included: true,
     },
   ]
 
@@ -120,10 +125,6 @@ export default function SubscriptionSection() {
                           {feature.included === true ? (
                             <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100">
                               <Check className="h-5 w-5 text-green-600" />
-                            </div>
-                          ) : feature.included === "dash" ? (
-                            <div className="inline-flex items-center justify-center w-8 h-8">
-                              <span className="h-0.5 w-5 bg-gray-400"></span>
                             </div>
                           ) : (
                             <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100">
