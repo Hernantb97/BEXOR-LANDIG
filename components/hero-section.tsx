@@ -94,7 +94,7 @@ export default function HeroSection() {
             <p className="text-white/80 mt-4 mb-6 text-left max-w-lg">
               {showChat 
                 ? "Interactúa con el asistente para ver cómo funcionaría para tus clientes"
-                : "Personaliza tu asistente y pruébalo en tiempo real"}
+                : "Delegar nunca fue tan inteligente"}
             </p>
             
             {/* Logo carousel added here */}
@@ -124,10 +124,10 @@ export default function HeroSection() {
             >
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all w-full"
+                className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 py-6 rounded-lg shadow-lg hover:shadow-xl transition-all w-full"
                 onClick={scrollToDemo}
               >
-                Prueba y configura gratis aquí
+                Prueba 7 días gratis
               </Button>
             </motion.div>
 
@@ -142,7 +142,7 @@ export default function HeroSection() {
               <form className="p-6 space-y-5" onSubmit={handleSubmit}>
                 <h3 className="text-xl font-semibold mb-4 flex items-center text-primary">
                   <Settings className="h-5 w-5 mr-2" />
-                  Solicita información personalizada
+                  Solicita tu demo
                 </h3>
                 <div className="space-y-2">
                   <label htmlFor="nombre" className="text-sm font-medium">Nombre</label>
