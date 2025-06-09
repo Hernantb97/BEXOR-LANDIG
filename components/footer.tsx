@@ -41,14 +41,14 @@ export default function Footer() {
             <ul className="space-y-2">
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-2 text-white/80" />
-                <a href="tel:222119268" className="text-white/80 hover:text-white transition-colors">
-                  222119268
+                <a href="tel:+15557891179" className="text-white/80 hover:text-white transition-colors">
+                  +1 (555) 789-1179
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-2 text-white/80" />
-                <a href="mailto:ventas@bexor.com" className="text-white/80 hover:text-white transition-colors">
-                  ventas@bexor.com
+                <a href="mailto:info@bexor.mx" className="text-white/80 hover:text-white transition-colors">
+                  info@bexor.mx
                 </a>
               </li>
             </ul>
@@ -58,7 +58,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Síguenos</h3>
             <div className="flex space-x-4">
               <a
-                href="https://facebook.com/bexor"
+                href="https://www.facebook.com/profile.php?id=61576226966479"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white transition-colors"
@@ -67,7 +67,7 @@ export default function Footer() {
                 <span className="sr-only">Facebook</span>
               </a>
               <a
-                href="https://instagram.com/bexor"
+                href="https://www.instagram.com/bexor.ai/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white transition-colors"
